@@ -148,6 +148,95 @@
             
 
   
+    <article id="post-JavaScript面试题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+  
+  
+    <h1 itemprop="name">
+	
+	  <a class="article-title" href="/2020/JavaScript%E9%9D%A2%E8%AF%95%E9%A2%98/">JavaScript面试题</a>
+	
+    </h1>
+  
+
+
+  
+  
+<a href="/2020/JavaScript%E9%9D%A2%E8%AF%95%E9%A2%98/" class="archive-article-date">
+        <time datetime="2020-05-27T03:59:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-05-27</time>
+</a>
+
+  
+  
+    
+
+  
+  </header>
+  
+  <div class="article-entry" itemprop="articleBody">
+    
+    
+    
+
+    
+
+    
+
+  </div>
+  <div class="article-info article-info-index">
+    
+    
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">JavaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">面试题</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+    
+
+    
+    <p class="article-more-link">
+      <a class="article-more-a" href="/2020/JavaScript%E9%9D%A2%E8%AF%95%E9%A2%98/">展开全文 >></a>
+    </p>
+    
+
+    
+    <div class="clearfix"></div>
+  </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-JavaScript-数组去重" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -177,85 +266,10 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <p>在JavaScript操作中，经常有关于Array的操作，常见的操作有增删改查，排序去重等等，但是数组的去重经常要用到自己手写的代码，网上查询关于JavaScript的数组去重操作都有很多方法，但是关于数组的操作不是copy代码就可以做到高枕无忧的。不同的方法会有不同的耗时，对于性能的影响也各不相同，在数据量小的时候尚不明显，但是在大数据的情况下，如果数据量很是庞大，那么耗时是很明显的，所以这么多关于数组去重的方法，到底那种方法更好呢。<br>为了知道数组去重对于时间的消耗，手动进行了测试。</p>
-<table>
-<thead>
-<tr>
-<th>去重方法</th>
-<th>10000</th>
-<th>100000</th>
-<th>1000000</th>
-<th>10000000</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>利用ES6 Set去重</td>
-<td>5ms</td>
-<td>15ms</td>
-<td>252ms</td>
-<td>4148ms</td>
-</tr>
-<tr>
-<td>for循环，splice去重</td>
-<td>273ms</td>
-<td>27422ms</td>
-<td>未测试</td>
-<td>未测试</td>
-</tr>
-<tr>
-<td>利用indexOf去重</td>
-<td>138ms</td>
-<td>13487ms</td>
-<td>未测试</td>
-<td>未测试</td>
-</tr>
-<tr>
-<td>利用sort()</td>
-<td>5ms</td>
-<td>47ms</td>
-<td>375ms</td>
-<td>4018ms</td>
-</tr>
-<tr>
-<td>利用includes</td>
-<td>150ms</td>
-<td>15134ms</td>
-<td>未测试</td>
-<td>未测试</td>
-</tr>
-<tr>
-<td>利用Map结构数据</td>
-<td>8ms</td>
-<td>36ms</td>
-<td>471ms</td>
-<td>5873ms</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p>创建数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ArrStart = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="keyword">const</span> arr = []</span><br><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">100000</span>), (item, index) =&gt; &#123;</span><br><span class="line">  arr.push(index)</span><br><span class="line">  arr.push(index + index) sasdsa</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> ArrEnd = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'创建数据耗时：'</span> + (ArrEnd - ArrStart) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure></li>
-<li><p>去重方法</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Start = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 去重的具体方法</span></span><br><span class="line">&#125;</span><br><span class="line">Deduplication(arr)</span><br><span class="line"><span class="keyword">const</span> End = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'去重耗时：'</span> + (End - Start) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>排序方法</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> StartSort = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="keyword">const</span> sortResult = arr.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a - b</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> EndSort = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'排序耗时：'</span> + (EndSort - StartSort) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h4 id="利用ES6-Set去重-ES6常见"><a href="#利用ES6-Set去重-ES6常见" class="headerlink" title="利用ES6 Set去重(ES6常见)"></a>利用ES6 Set去重(ES6常见)</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>(arr))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="利用for嵌套for，然后splice去重-ES5常见"><a href="#利用for嵌套for，然后splice去重-ES5常见" class="headerlink" title="利用for嵌套for，然后splice去重(ES5常见)"></a>利用for嵌套for，然后splice去重(ES5常见)</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;arr.length; i++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> j=i+<span class="number">1</span>; j&lt;arr.length; j++)&#123;</span><br><span class="line">      <span class="keyword">if</span>(arr[i]==arr[j])&#123;         <span class="comment">//第一个等同于第二个，splice方法删除第二个</span></span><br><span class="line">        arr.splice(j,<span class="number">1</span>);</span><br><span class="line">        j--;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="利用IndexOf"><a href="#利用IndexOf" class="headerlink" title="利用IndexOf"></a>利用IndexOf</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> array = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (array.indexOf(arr[i]) === <span class="number">-1</span>) &#123;</span><br><span class="line">      array.push(arr[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="利用sort"><a href="#利用sort" class="headerlink" title="利用sort()"></a>利用sort()</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  arr = arr.sort()</span><br><span class="line">  <span class="keyword">var</span> arrry = [arr[<span class="number">0</span>]];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (arr[i] !== arr[i - <span class="number">1</span>]) &#123;</span><br><span class="line">      arrry.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arrry;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="利用includes"><a href="#利用includes" class="headerlink" title="利用includes"></a>利用includes</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> array = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!array.includes(arr[i])) &#123;<span class="comment">//includes 检测数组是否有某个值</span></span><br><span class="line">      array.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="利用Map结构数据"><a href="#利用Map结构数据" class="headerlink" title="利用Map结构数据"></a>利用Map结构数据</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">  <span class="keyword">let</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>();  <span class="comment">// 数组用于返回结果</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (map.has(arr[i])) &#123;  <span class="comment">// 如果有该key值</span></span><br><span class="line">      map.set(arr[i], <span class="literal">true</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      map.set(arr[i], <span class="literal">false</span>);   <span class="comment">// 如果没有该key值</span></span><br><span class="line">      array.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>经过一轮测试</p>
-<ul>
-<li>利用ES6 Set去重</li>
-<li>利用sort()</li>
-<li>利用Map结构数据<br>均可在百万数据量的时候实现快速去重，千万级数据也能较快去重</li>
-</ul>
-
+    <p>在JavaScript操作中，经常有关于Array的操作，常见的操作有增删改查，排序去重等等，但是数组的去重经常要用到自己手写的代码，网上查询关于JavaScript的数组去重操作都有很多方法，但是关于数组的操作不是copy代码就可以做到高枕无忧的。不同的方法会有不同的耗时，对于性能的影响也各不相同，在数据量小的时候尚不明显，但是在大数据的情况下，如果数据量很是庞大，那么耗时是很明显的，所以这么多关于数组去重的方法，到底那种方法更好呢。</p>
+    
+    <a class="article-more-a" href="/2020/JavaScript-%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D/#more">more >></a>
+    
     
 
     
@@ -340,141 +354,10 @@
   
   <div class="article-entry" itemprop="articleBody">
     
-    <table>
-<thead>
-<tr>
-<th>数组操作方法</th>
-<th>数组操作结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Array.length</td>
-<td>查看数组长度</td>
-</tr>
-<tr>
-<td>Array.from()</td>
-<td>浅拷贝数组实例</td>
-</tr>
-<tr>
-<td>Array.isArray()</td>
-<td>确认是否为数组</td>
-</tr>
-<tr>
-<td>Array.of()</td>
-<td>创建新数组实例</td>
-</tr>
-<tr>
-<td>Array.prototype.concat()</td>
-<td>连接多个数组</td>
-</tr>
-<tr>
-<td>Array.prototype.copyWithin()</td>
-<td>浅复制数组</td>
-</tr>
-<tr>
-<td>Array.prototype.filter()</td>
-<td>过滤数组</td>
-</tr>
-<tr>
-<td>Array.prototype.find()</td>
-<td>查找数组</td>
-</tr>
-<tr>
-<td>Array.prototype.forEach()</td>
-<td>遍历数组</td>
-</tr>
-<tr>
-<td>Array.prototype.includes()</td>
-<td>查看数组是否包含内容</td>
-</tr>
-<tr>
-<td>array.prototype.indexOf()</td>
-<td>查找某个元素的索引</td>
-</tr>
-<tr>
-<td>array.prototype.join()</td>
-<td>组合数组元素返回字符串</td>
-</tr>
-<tr>
-<td>array.prototype.push()</td>
-<td>向数组末尾插入元素</td>
-</tr>
-<tr>
-<td>array.prototype.pop()</td>
-<td>删除数组末尾的元素</td>
-</tr>
-<tr>
-<td>array.prototype.unshift()</td>
-<td>向数组首位插入元素</td>
-</tr>
-<tr>
-<td>array.prototype.shift()</td>
-<td>删除数组首位的元素</td>
-</tr>
-<tr>
-<td>array.prototype.reverse()</td>
-<td>颠倒数组</td>
-</tr>
-<tr>
-<td>array.prototype.sort()</td>
-<td>数组排序</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p><code>Array.length</code> 查看数组的长度</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.length)</span><br><span class="line"><span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.from()</code> 浅拷贝数组或可迭代对象</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="keyword">const</span> str = <span class="string">'this'</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(array))</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e"]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(str))</span><br><span class="line"><span class="comment">// ["t", "h", "i", "s"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.isArray()</code> 确认是否为数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.isArray(arr))</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.of()</code> 创建具有可变数量参数的新数组实例</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="number">5</span>))</span><br><span class="line"><span class="comment">// [5]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">5</span>))</span><br><span class="line"><span class="comment">// [undefined, undefined, undefined, undefined, undefined]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.concat()</code> 连接多个数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr1 = [<span class="string">'a1'</span>,<span class="string">'b1'</span>,<span class="string">'c1'</span>]</span><br><span class="line"><span class="keyword">const</span> arr2 = [<span class="string">'a2'</span>,<span class="string">'b2'</span>,<span class="string">'c2'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr1.concat(arr2))</span><br><span class="line"><span class="comment">// ["a1", "b1", "c1", "a2", "b2", "c2"]</span></span><br><span class="line"><span class="built_in">console</span>.log(arr2.concat(arr1))</span><br><span class="line"><span class="comment">// ["a2", "b2", "c2", "a1", "b1", "c1"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.copyWithin()</code> 浅复制数组 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin" target="_blank" rel="noopener">详细用法</a></p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e"]</span></span><br><span class="line">arr.copyWithin(<span class="number">2</span>,<span class="number">1</span>,<span class="number">3</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "b", "c", "e"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.filter()</code> 过滤数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'spray'</span>, <span class="string">'limit'</span>, <span class="string">'elite'</span>, <span class="string">'exuberant'</span>, <span class="string">'destruction'</span>, <span class="string">'present'</span>]</span><br><span class="line"><span class="keyword">const</span> arr1 = []</span><br><span class="line">arr.filter(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (item.length &gt; <span class="number">5</span>) &#123;</span><br><span class="line">    arr1.push(item)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(arr1)</span><br><span class="line"><span class="comment">// ["exuberant", "destruction", "present"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.find()</code> 查找数组</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'libai'</span>, <span class="attr">age</span>: <span class="number">20</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'dufu'</span>, <span class="attr">age</span>: <span class="number">24</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'baijuyi'</span>, <span class="attr">age</span>: <span class="number">12</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'hanyu'</span>, <span class="attr">age</span>: <span class="number">40</span>&#125;</span><br><span class="line">]</span><br><span class="line">arr.find(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (item.name === <span class="string">'baijuyi'</span>)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item.age)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.indexOf()</code> 找出某个元素在数组中的索引</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.indexOf(<span class="string">'c'</span>))</span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.join()</code> 组合数组元素返回字符串</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.join())</span><br><span class="line"><span class="comment">// "a,b,c,d,e"</span></span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ul>
-<ul>
-<li><p><code>Array.prototype.push()</code> 添加元素到数组的头部</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.unshift(<span class="string">'123'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["123", "a", "b", "c", "d", "e"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.push()</code> 添加元素到数组的末尾</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.push(<span class="string">'123'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e", "123"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.shift()</code> 删除数组最前面（头部）的元素</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.shift()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["b", "c", "d", "e"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.pop()</code> 删除数组末尾的元素</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.pop()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.reverse()</code> 颠倒数组的顺序</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.reverse()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["e", "d", "c", "b", "a"]</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><code>Array.prototype.sort()</code> 数组排序</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">30</span>, <span class="number">9</span>, <span class="number">21</span>, <span class="number">100000</span>, <span class="number">564</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.sort())</span><br><span class="line"><span class="comment">// [1, 100000, 21, 30, 564, 9]</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-
+    <p>平时会有许多关于数组的操作，所以看了下文档整理了下与数组有关的操作。</p>
+    
+    <a class="article-more-a" href="/2020/JavaScript-Array/#more">more >></a>
+    
     
 
     
@@ -615,6 +498,10 @@
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">JavaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">面试题</a>
               </li>
             
             <div class="clearfix"></div>
