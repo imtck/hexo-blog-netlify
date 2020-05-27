@@ -98,7 +98,9 @@ theme: yilia-plus
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: ''
+  type: 'git'
+  repository: https://github.com/imtck/hexo-blog-netlify.git
+  branch: run-page
 
 
 
