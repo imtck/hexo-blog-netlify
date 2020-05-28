@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>JavaScript-this的指向问题</title>
+    <url>/2020/JavaScript-This/</url>
+    <content><![CDATA[<p>平时码代码的过程中总是会接触到this的问题，有的时候this可以调用，有的时候调用就是<code>undefined</code>，为了搞懂this指向相关的问题，以便在工作中节省效率，所以花了点时间去学习一下this的指向问题。</p>
+<a id="more"></a>
+<h3 id="普通函数调用"><a href="#普通函数调用" class="headerlink" title="普通函数调用"></a>普通函数调用</h3><p>this指向全局，即<code>window</code>对象。</p>
+<ul>
+<li><code>var</code>定义的是全局变量，所以this可以调用，因为this的指向是全局。在<code>nodeJS</code>环境下会出现<code>undefined</code>的返回值。</li>
+<li><code>const</code>和<code>let</code>定义的是局部变量，this的指向是全局，所以无法成功调用，返回<code>undefined</code>。<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nameA = <span class="string">'nameA'</span></span><br><span class="line"><span class="keyword">let</span> nameB = <span class="string">'nameB'</span></span><br><span class="line"><span class="keyword">var</span> nameC = <span class="string">'nameC'</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.nameA);</span><br><span class="line">  <span class="comment">// undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.nameB);</span><br><span class="line">  <span class="comment">// undefined</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.nameC);</span><br><span class="line">  <span class="comment">// "nameC"</span></span><br><span class="line">&#125;</span><br><span class="line">Test()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="对象函数调用"><a href="#对象函数调用" class="headerlink" title="对象函数调用"></a>对象函数调用</h3><p>哪个函数调用，this指向哪里。<br><code>Obj.Log()</code>调用<code>Log</code>函数的时候，this指向的是<code>Obj</code>。</p>
+<ul>
+<li>在<code>Obj</code>对象中，<code>Obj</code>的原型链下没有<code>NumWin</code>这个属性，所以this指向的<code>NumWin</code>返回值为<code>undefined</code></li>
+<li><code>NumObj</code>在<code>Obj</code>这个对象中有定义，所以this指向可以成功调用</li>
+<li>打印<code>window.NumWin</code>的时候，因为在开始有定义过，没有指定<code>const</code>或者<code>let</code>，所以<code>window.NumWin</code>是全局变量，可以成功调用</li>
+<li>打印<code>this.window.NumWin</code>的时候，因为this下面没有<code>window</code>这个属性，所以<code>this.window</code>会返回<code>undefined</code>，当在<code>undefined</code>后面继续调用的时候，因为没有形成原型链，所以浏览器会报错<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.NumWin = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> Obj = &#123;</span><br><span class="line">  NumObj: <span class="number">2</span>,</span><br><span class="line">  Log: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.NumWin)</span><br><span class="line">    <span class="comment">// undefined</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.NumObj)</span><br><span class="line">    <span class="comment">// 2</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">window</span>.NumWin)</span><br><span class="line">    <span class="comment">// 1</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.window.NumWin)</span><br><span class="line">    <span class="comment">// "TypeError: Cannot read property 'NumWin' of undefined</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Obj.Log()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="对象函数调用-使用内部函数"><a href="#对象函数调用-使用内部函数" class="headerlink" title="对象函数调用(使用内部函数)"></a>对象函数调用(使用内部函数)</h3><p>对象函数调用的时候，当函数体内没有定义变量的时候，this的指向是全局，这是可行的。但是如果函数体内有定义变量，此时我们希望this指向是函数体内的变量。<br>如果调用的函数里面有内部函数，那么就会出现this指向不符合预期的情况，我们希望内部函数的this指向函数调用自身，但是this的指向确是全局。<br>根据《js语言精粹》所说，这是设计上的一个错误，内部函数的this绑定了错误的对象，所以不能共享访问权。</p>
+<ul>
+<li>定义一个全局变量<code>Num</code>，再定义一个函数体内的局部变量<code>ObjNum</code></li>
+<li>在函数体内建立一个内部函数，在该函数的体内再建立一个函数，并直接在该函数体内调用该函数</li>
+<li>全局调用<code>Obj</code>内的<code>ObjFn</code>函数<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Num = <span class="number">5</span></span><br><span class="line"><span class="keyword">const</span> Obj = &#123;</span><br><span class="line">  ObjNum: <span class="number">1</span>,</span><br><span class="line">  ObjFn: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// var _this = this</span></span><br><span class="line">    ObjAdd = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="comment">// _this.ObjNum = Add(_this.ObjNum, _this.ObjNum)</span></span><br><span class="line">      <span class="keyword">this</span>.ObjNum = Add(<span class="keyword">this</span>.ObjNum, <span class="keyword">this</span>.ObjNum)</span><br><span class="line">      <span class="keyword">this</span>.Num = Add(<span class="keyword">this</span>.Num, <span class="keyword">this</span>.Num)</span><br><span class="line">    &#125;;</span><br><span class="line">    ObjAdd()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br><span class="line">Obj.ObjFn()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>分别打印上面JavaScript的属性值。</p>
+<ul>
+<li>Num是全局变量，所以this指向是全局，不会影响调用</li>
+<li>我们期望Obj.ObjNum的this指向是局部，但是this的指向是全局，所以不会对Obj.ObjNum的值产生影响<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(Num)</span><br><span class="line"><span class="comment">// 10</span></span><br><span class="line"><span class="built_in">console</span>.log(Obj.ObjNum)</span><br><span class="line"><span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>解决上面this指向的问题可以通过建立一个变量，使这个建立的变量的this指向内部函数自身，这样就可以通过建立的变量来调用内部函数的变量,并对内部函数的变量进行修改。</p>
+<ul>
+<li>如一开始的函数，如果使用注释的代码所使用的方法，并不会改变this本身的指向，本身还是指向全局，但是通过变量的this则是指向函数自身，这样就可以依据业务选择使用全局this还是局部的this<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(Num)</span><br><span class="line"><span class="comment">// 10</span></span><br><span class="line"><span class="built_in">console</span>.log(Obj.ObjNum)</span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="构造函数调用"><a href="#构造函数调用" class="headerlink" title="构造函数调用"></a>构造函数调用</h3><p>使用构造函数是，new会创建一个新的对象，新的对象会继承构造函数的属性和方法。<br>不仅创建一个连接到该函数的<code>prototype</code>成员的新对象，同时this会被绑定到这个创建的新对象。</p>
+<ul>
+<li>打印<code>MyFn</code>,可以看出创建了一个包含了<code>value</code>的新对象，同时创建的<code>get_value</code>也被绑定在这个新的对象上</li>
+<li>打印<code>Fn</code>，可以看出new的对象不会对原函数有任何的影响</li>
+<li>打印<code>MyFn.value</code>，因为this绑定到了创建的<code>MyFn</code>对象上，所以可以成功获取数据</li>
+<li>打印<code>Fn.value</code>，因为this绑定到了创建的MyFn对象上，没有对<code>Fn</code>这个本身的函数有影响，所以<code>Fn</code>的原型链上不包含<code>value</code>属性，所以会返回<code>undefined</code></li>
+<li>打印<code>MyFn.get_value()</code>，因为<code>get_value()</code>方法通过this绑定到了<code>MyFn</code>上，所以在函数调用函数，可以成功return之前绑定的<code>this.value</code>的值</li>
+<li>打印<code>Fn.get_value()</code>，因为Fn上没有<code>get_value()</code>函数，所以浏览器会报错<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 定义一个函数</span></span><br><span class="line"><span class="keyword">const</span> Fn = <span class="function"><span class="keyword">function</span> (<span class="params">string</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.value = string</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 创建一个原型链</span></span><br><span class="line">Fn.prototype.get_value = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.value</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> MyFn = <span class="keyword">new</span> Fn(<span class="string">'这是构造函数new的值'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(MyFn)</span><br><span class="line"><span class="comment">// [object Object] &#123;</span></span><br><span class="line"><span class="comment">//   get_value: function () &#123;</span></span><br><span class="line"><span class="comment">//     return this.value</span></span><br><span class="line"><span class="comment">//   &#125;,</span></span><br><span class="line"><span class="comment">//   value: "这是构造函数new的值"</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(Fn)</span><br><span class="line"><span class="comment">// function (string) &#123;</span></span><br><span class="line"><span class="comment">//   this.value = string</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(MyFn.value)</span><br><span class="line"><span class="comment">// "这是构造函数new的值"</span></span><br><span class="line"><span class="built_in">console</span>.log(Fn.value)</span><br><span class="line"><span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(MyFn.get_value())</span><br><span class="line"><span class="comment">// "这是构造函数new的值"</span></span><br><span class="line"><span class="built_in">console</span>.log(Fn.get_value())</span><br><span class="line"><span class="comment">// TypeError: Fn.get_value is not a function</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="apply和call调用"><a href="#apply和call调用" class="headerlink" title="apply和call调用"></a>apply和call调用</h3><p><code>apply</code>和<code>call</code>的作用一样，区别在于参数的传递<br><code>apply</code>和<code>call</code>的第一个参数都是函数体内this的指向<br><code>qpply</code>的第二个参数是一个集合对象<br><code>call</code>的第二个参数是是依次传入的参数</p>
+<ul>
+<li>改变this指向</li>
+<li>方法借用<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ObjOne = &#123;</span><br><span class="line">  Num: <span class="number">1</span>,</span><br><span class="line">  Str: <span class="string">'对象1'</span>,</span><br><span class="line">  ObjOneFn: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.Num)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.Str)</span><br><span class="line">    <span class="comment">// 2</span></span><br><span class="line">    <span class="comment">// 对象2</span></span><br><span class="line">    <span class="comment">// 3</span></span><br><span class="line">    <span class="comment">// 对象3</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> ObjTwo = &#123;</span><br><span class="line">  Num: <span class="number">2</span>,</span><br><span class="line">  Str: <span class="string">'对象2'</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> ObjThree = &#123;</span><br><span class="line">  Num: <span class="number">3</span>,</span><br><span class="line">  Str: <span class="string">'对象3'</span></span><br><span class="line">&#125;</span><br><span class="line">ObjOne.ObjOneFn.apply(ObjTwo)</span><br><span class="line">ObjOne.ObjOneFn.call(ObjThree)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="箭头函数调用"><a href="#箭头函数调用" class="headerlink" title="箭头函数调用"></a>箭头函数调用</h3><p>参考使用了内部函数的对象函数调用this，可以知道this的指向是全局，所以在这个函数中，打印的内容是<code>undefined</code>。</p>
+<ul>
+<li>使用原本的函数<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Obj = &#123;</span><br><span class="line">  ObjNum: <span class="number">1</span>,</span><br><span class="line">  ObjFn: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    ObjLog = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="keyword">this</span>.ObjNum)</span><br><span class="line">      <span class="comment">// undefined</span></span><br><span class="line">    &#125;</span><br><span class="line">    ObjLog()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Obj.ObjFn()</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>但是除了通过在函数体内定义一个变量，指定this，以实现内部函数调用函数体内变量的方法，还可以通过箭头函数直接改变this指向。<br>因为箭头函数自身没有指定this的指向，所以会向上层作用域查找，<code>ObjFn</code>的this指向<code>Obj</code>，所以箭头函数的this也指向<code>Obj</code>，即可输出函数体内的数据。</p>
+<ul>
+<li>使用箭头函数<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Obj = &#123;</span><br><span class="line">  ObjNum: <span class="number">1</span>,</span><br><span class="line">  ObjFn: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    ObjLog = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="keyword">this</span>.ObjNum)</span><br><span class="line">      <span class="comment">// 1</span></span><br><span class="line">    &#125;</span><br><span class="line">    ObjLog()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">Obj.ObjFn()</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>JS面试</category>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+        <tag>经验总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript-数组去重</title>
+    <url>/2020/JavaScript-%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D/</url>
+    <content><![CDATA[<p>在JavaScript操作中，经常有关于Array的操作，常见的操作有增删改查，排序去重等等，但是数组的去重经常要用到自己手写的代码，网上查询关于JavaScript的数组去重操作都有很多方法，但是关于数组的操作不是copy代码就可以做到高枕无忧的。</p>
+<a id="more"></a>
+<p>不同的方法会有不同的耗时，对于性能的影响也各不相同，在数据量小的时候尚不明显，但是在大数据的情况下，如果数据量很是庞大，那么耗时是很明显的，所以这么多关于数组去重的方法，到底那种方法更好呢。<br>为了知道数组去重对于时间的消耗，手动进行了测试。</p>
+<table>
+<thead>
+<tr>
+<th>去重方法</th>
+<th>10000</th>
+<th>100000</th>
+<th>1000000</th>
+<th>10000000</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>利用ES6 Set去重</td>
+<td>5ms</td>
+<td>15ms</td>
+<td>252ms</td>
+<td>4148ms</td>
+</tr>
+<tr>
+<td>for循环，splice去重</td>
+<td>273ms</td>
+<td>27422ms</td>
+<td>未测试</td>
+<td>未测试</td>
+</tr>
+<tr>
+<td>利用indexOf去重</td>
+<td>138ms</td>
+<td>13487ms</td>
+<td>未测试</td>
+<td>未测试</td>
+</tr>
+<tr>
+<td>利用sort()</td>
+<td>5ms</td>
+<td>47ms</td>
+<td>375ms</td>
+<td>4018ms</td>
+</tr>
+<tr>
+<td>利用includes</td>
+<td>150ms</td>
+<td>15134ms</td>
+<td>未测试</td>
+<td>未测试</td>
+</tr>
+<tr>
+<td>利用Map结构数据</td>
+<td>8ms</td>
+<td>36ms</td>
+<td>471ms</td>
+<td>5873ms</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>创建数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ArrStart = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="keyword">const</span> arr = []</span><br><span class="line"><span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">100000</span>), (item, index) =&gt; &#123;</span><br><span class="line">  arr.push(index)</span><br><span class="line">  arr.push(index + index) sasdsa</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> ArrEnd = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'创建数据耗时：'</span> + (ArrEnd - ArrStart) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>去重方法</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Start = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 去重的具体方法</span></span><br><span class="line">&#125;</span><br><span class="line">Deduplication(arr)</span><br><span class="line"><span class="keyword">const</span> End = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'去重耗时：'</span> + (End - Start) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>排序方法</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> StartSort = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="keyword">const</span> sortResult = arr.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> a - b</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> EndSort = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime()</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'排序耗时：'</span> + (EndSort - StartSort) + <span class="string">'ms'</span>)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="利用ES6-Set去重-ES6常见"><a href="#利用ES6-Set去重-ES6常见" class="headerlink" title="利用ES6 Set去重(ES6常见)"></a>利用ES6 Set去重(ES6常见)</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Array</span>.from(<span class="keyword">new</span> <span class="built_in">Set</span>(arr))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="利用for嵌套for，然后splice去重-ES5常见"><a href="#利用for嵌套for，然后splice去重-ES5常见" class="headerlink" title="利用for嵌套for，然后splice去重(ES5常见)"></a>利用for嵌套for，然后splice去重(ES5常见)</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;arr.length; i++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> j=i+<span class="number">1</span>; j&lt;arr.length; j++)&#123;</span><br><span class="line">      <span class="keyword">if</span>(arr[i]==arr[j])&#123;         <span class="comment">//第一个等同于第二个，splice方法删除第二个</span></span><br><span class="line">        arr.splice(j,<span class="number">1</span>);</span><br><span class="line">        j--;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="利用IndexOf"><a href="#利用IndexOf" class="headerlink" title="利用IndexOf"></a>利用IndexOf</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> array = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (array.indexOf(arr[i]) === <span class="number">-1</span>) &#123;</span><br><span class="line">      array.push(arr[i])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="利用sort"><a href="#利用sort" class="headerlink" title="利用sort()"></a>利用sort()</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  arr = arr.sort()</span><br><span class="line">  <span class="keyword">var</span> arrry = [arr[<span class="number">0</span>]];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (arr[i] !== arr[i - <span class="number">1</span>]) &#123;</span><br><span class="line">      arrry.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arrry;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="利用includes"><a href="#利用includes" class="headerlink" title="利用includes"></a>利用includes</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!<span class="built_in">Array</span>.isArray(arr)) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'type error!'</span>)</span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> array = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!array.includes(arr[i])) &#123;<span class="comment">//includes 检测数组是否有某个值</span></span><br><span class="line">      array.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="利用Map结构数据"><a href="#利用Map结构数据" class="headerlink" title="利用Map结构数据"></a>利用Map结构数据</h4><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Deduplication</span>(<span class="params">arr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line">  <span class="keyword">let</span> array = <span class="keyword">new</span> <span class="built_in">Array</span>();  <span class="comment">// 数组用于返回结果</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (map.has(arr[i])) &#123;  <span class="comment">// 如果有该key值</span></span><br><span class="line">      map.set(arr[i], <span class="literal">true</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      map.set(arr[i], <span class="literal">false</span>);   <span class="comment">// 如果没有该key值</span></span><br><span class="line">      array.push(arr[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过一轮测试</p>
+<ul>
+<li>利用ES6 Set去重</li>
+<li>利用sort()</li>
+<li>利用Map结构数据<br>均可在百万数据量的时候实现快速去重，千万级数据也能较快去重</li>
+</ul>
+]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JavaScript的数组操作</title>
+    <url>/2020/JavaScript-Array/</url>
+    <content><![CDATA[<p>平时会有许多关于数组的操作，所以看了下文档整理了下与数组有关的操作。</p>
+<a id="more"></a>
+<table>
+<thead>
+<tr>
+<th>数组操作方法</th>
+<th>数组操作结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Array.length</td>
+<td>查看数组长度</td>
+</tr>
+<tr>
+<td>Array.from()</td>
+<td>浅拷贝数组实例</td>
+</tr>
+<tr>
+<td>Array.isArray()</td>
+<td>确认是否为数组</td>
+</tr>
+<tr>
+<td>Array.of()</td>
+<td>创建新数组实例</td>
+</tr>
+<tr>
+<td>Array.prototype.concat()</td>
+<td>连接多个数组</td>
+</tr>
+<tr>
+<td>Array.prototype.copyWithin()</td>
+<td>浅复制数组</td>
+</tr>
+<tr>
+<td>Array.prototype.filter()</td>
+<td>过滤数组</td>
+</tr>
+<tr>
+<td>Array.prototype.find()</td>
+<td>查找数组</td>
+</tr>
+<tr>
+<td>Array.prototype.forEach()</td>
+<td>遍历数组</td>
+</tr>
+<tr>
+<td>Array.prototype.includes()</td>
+<td>查看数组是否包含内容</td>
+</tr>
+<tr>
+<td>array.prototype.indexOf()</td>
+<td>查找某个元素的索引</td>
+</tr>
+<tr>
+<td>array.prototype.join()</td>
+<td>组合数组元素返回字符串</td>
+</tr>
+<tr>
+<td>array.prototype.push()</td>
+<td>向数组末尾插入元素</td>
+</tr>
+<tr>
+<td>array.prototype.pop()</td>
+<td>删除数组末尾的元素</td>
+</tr>
+<tr>
+<td>array.prototype.unshift()</td>
+<td>向数组首位插入元素</td>
+</tr>
+<tr>
+<td>array.prototype.shift()</td>
+<td>删除数组首位的元素</td>
+</tr>
+<tr>
+<td>array.prototype.reverse()</td>
+<td>颠倒数组</td>
+</tr>
+<tr>
+<td>array.prototype.sort()</td>
+<td>数组排序</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><code>Array.length</code> 查看数组的长度</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.length)</span><br><span class="line"><span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.from()</code> 浅拷贝数组或可迭代对象</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> array = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="keyword">const</span> str = <span class="string">'this'</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(array))</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e"]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.from(str))</span><br><span class="line"><span class="comment">// ["t", "h", "i", "s"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.isArray()</code> 确认是否为数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.isArray(arr))</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.of()</code> 创建具有可变数量参数的新数组实例</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>.of(<span class="number">5</span>))</span><br><span class="line"><span class="comment">// [5]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Array</span>(<span class="number">5</span>))</span><br><span class="line"><span class="comment">// [undefined, undefined, undefined, undefined, undefined]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.concat()</code> 连接多个数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr1 = [<span class="string">'a1'</span>,<span class="string">'b1'</span>,<span class="string">'c1'</span>]</span><br><span class="line"><span class="keyword">const</span> arr2 = [<span class="string">'a2'</span>,<span class="string">'b2'</span>,<span class="string">'c2'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr1.concat(arr2))</span><br><span class="line"><span class="comment">// ["a1", "b1", "c1", "a2", "b2", "c2"]</span></span><br><span class="line"><span class="built_in">console</span>.log(arr2.concat(arr1))</span><br><span class="line"><span class="comment">// ["a2", "b2", "c2", "a1", "b1", "c1"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.copyWithin()</code> 浅复制数组 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin" target="_blank" rel="noopener">详细用法</a></p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e"]</span></span><br><span class="line">arr.copyWithin(<span class="number">2</span>,<span class="number">1</span>,<span class="number">3</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "b", "c", "e"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.filter()</code> 过滤数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'spray'</span>, <span class="string">'limit'</span>, <span class="string">'elite'</span>, <span class="string">'exuberant'</span>, <span class="string">'destruction'</span>, <span class="string">'present'</span>]</span><br><span class="line"><span class="keyword">const</span> arr1 = []</span><br><span class="line">arr.filter(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (item.length &gt; <span class="number">5</span>) &#123;</span><br><span class="line">    arr1.push(item)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(arr1)</span><br><span class="line"><span class="comment">// ["exuberant", "destruction", "present"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.find()</code> 查找数组</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'libai'</span>, <span class="attr">age</span>: <span class="number">20</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'dufu'</span>, <span class="attr">age</span>: <span class="number">24</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'baijuyi'</span>, <span class="attr">age</span>: <span class="number">12</span>&#125;,</span><br><span class="line">  &#123;<span class="attr">name</span>:<span class="string">'hanyu'</span>, <span class="attr">age</span>: <span class="number">40</span>&#125;</span><br><span class="line">]</span><br><span class="line">arr.find(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (item.name === <span class="string">'baijuyi'</span>)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(item.age)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.indexOf()</code> 找出某个元素在数组中的索引</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.indexOf(<span class="string">'c'</span>))</span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.join()</code> 组合数组元素返回字符串</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.join())</span><br><span class="line"><span class="comment">// "a,b,c,d,e"</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p><code>Array.prototype.push()</code> 添加元素到数组的头部</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.unshift(<span class="string">'123'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["123", "a", "b", "c", "d", "e"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.push()</code> 添加元素到数组的末尾</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.push(<span class="string">'123'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d", "e", "123"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.shift()</code> 删除数组最前面（头部）的元素</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.shift()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["b", "c", "d", "e"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.pop()</code> 删除数组末尾的元素</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.pop()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["a", "b", "c", "d"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.reverse()</code> 颠倒数组的顺序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="string">'a'</span>,<span class="string">'b'</span>,<span class="string">'c'</span>,<span class="string">'d'</span>,<span class="string">'e'</span>]</span><br><span class="line">arr.reverse()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line"><span class="comment">// ["e", "d", "c", "b", "a"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>Array.prototype.sort()</code> 数组排序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">1</span>, <span class="number">30</span>, <span class="number">9</span>, <span class="number">21</span>, <span class="number">100000</span>, <span class="number">564</span>]</span><br><span class="line"><span class="built_in">console</span>.log(arr.sort())</span><br><span class="line"><span class="comment">// [1, 100000, 21, 30, 564, 9]</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+</search>
