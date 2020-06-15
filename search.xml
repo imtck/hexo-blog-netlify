@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>JavaScript-Array-几个数组函数的比较</title>
+    <url>/2020/JavaScript-Array-Compare/</url>
+    <content><![CDATA[<p>因为平时forEach用的多，知其然不知其所以然。所以对几个数组函数，Array.map()，Array.forEach()，Array.reduce()的用法和使用场景做出了简单的分析</p>
+<a id="more"></a>
+<p>官方文档有过介绍，forEach和map都是遍历数据之后可以进行操作<br>
+forEach可以改变原数组，map不能改变原数组，map是通过生成新数组来实现操作的<br>
+但是实际测试不然，forEach是通过数组引用改变原数组，实际map也是可以这样做到的</p>
+<h4 id="Array-prototype-forEach">Array.prototype.forEach()</h4>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank" rel="noopener">MDN官方文档</a><br>
+遍历数组的每一项，以执行给定函数，不可以返回新数组</p>
+<ul>
+<li>在操作中写函数，但是不涉及对数组的操作，不会影响原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [4, 5, 8]</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li>在操作中写函数，涉及对数组引用方式的操作，会改变原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">item, index</span>) =&gt;</span> arr[index] = item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li>尝试把forEach的遍历处理的数据写入新数组，返回undefined<br>
+由此得知forEach不能创建数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line"><span class="keyword">let</span> arr1 = arr.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr1) <span class="comment">// undefined</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<h4 id="Array-prototype-map">Array.prototype.map()</h4>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="noopener">MDN官方文档</a></p>
+<ul>
+<li>在操作中写函数，但是不涉及对数组的操作，不会影响原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 4, 5, 8 ]</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li>在操作中写函数，涉及对数组引用的操作，会改变原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> arr[index] = item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li>尝试把map的遍历处理的数据写入新数组，返回对应数据<br>
+由此得知map可以创建新的栈区<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line"><span class="keyword">let</span> arr1 = arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr1) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<h4 id="Array-prototype-reduce">Array.prototype.reduce()</h4>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank" rel="noopener">MDN官方文档</a><br>
+如果对数据处理是需要循环处理，并且下一次的处理需要和上一次处理的数据相关联，而且处理流程的函数方法都一样，那么可以通过reduce，省略很多步骤</p>
+<ul>
+<li>累加<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">12</span>, <span class="number">23</span>]</span><br><span class="line"><span class="keyword">const</span> reducer = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line"><span class="keyword">const</span> test1 = arr.reduce(reducer)</span><br><span class="line"><span class="built_in">console</span>.log(test1)</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<h4 id="分析总结">分析总结</h4>
+<ul>
+<li><code>map</code>和<code>forEach</code><br>
+虽然文档说<code>map</code>和<code>forEach</code>在对原数组操作模式上不一样<br>
+测试之后其实也是有共通之处的<br>
+所不同的地方在于，<code>map</code>可以返回一个新数组，<code>forEach</code>不可以<br>
+所以结合官方和众人的经验总结，对于<code>map</code>和<code>forEach</code>在不同场景下选取不同的使用<br>
+如果需要涉及对数据有改动的相关操作使用<code>map</code><br>
+如果是对数据无改动，对数据查询，写入数据库等操作，使用<code>forEach</code></li>
+<li>与<code>reduce</code>的使用关系<br>
+当复杂的函数可以使用map处理<br>
+简单的函数处理，重复工作的累加累减这种可以使用reduce<br>
+使用reduce可以减少代码量</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>JavaScript</category>
+        <category>Array</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JavaScript-Array</title>
     <url>/2020/JavaScript-Array/</url>
     <content><![CDATA[<p>简单罗列了数组及数组操作的相关知识。</p>
@@ -284,8 +363,8 @@
           });
       </script>]]></content>
       <categories>
-        <category>JS面试</category>
         <category>JavaScript</category>
+        <category>JS面试</category>
       </categories>
       <tags>
         <tag>JavaScript</tag>
@@ -384,85 +463,6 @@
 <li>利用sort()</li>
 <li>利用Map结构数据<br>
 均可在百万数据量的时候实现快速去重，千万级数据也能较快去重</li>
-</ul>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>]]></content>
-      <categories>
-        <category>JavaScript</category>
-        <category>Array</category>
-      </categories>
-      <tags>
-        <tag>JavaScript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>JavaScript-Array-几个数组函数的比较</title>
-    <url>/2020/JavaScript-Array-Compare/</url>
-    <content><![CDATA[<p>因为平时forEach用的多，知其然不知其所以然。所以对几个数组函数，Array.map()，Array.forEach()，Array.reduce()的用法和使用场景做出了简单的分析</p>
-<a id="more"></a>
-<p>官方文档有过介绍，forEach和map都是遍历数据之后可以进行操作<br>
-forEach可以改变原数组，map不能改变原数组，map是通过生成新数组来实现操作的<br>
-但是实际测试不然，forEach是通过数组引用改变原数组，实际map也是可以这样做到的</p>
-<h4 id="Array-prototype-forEach">Array.prototype.forEach()</h4>
-<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank" rel="noopener">MDN官方文档</a><br>
-遍历数组的每一项，以执行给定函数，不可以返回新数组</p>
-<ul>
-<li>在操作中写函数，但是不涉及对数组的操作，不会影响原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [4, 5, 8]</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li>在操作中写函数，涉及对数组引用方式的操作，会改变原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.forEach(<span class="function">(<span class="params">item, index</span>) =&gt;</span> arr[index] = item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li>尝试把forEach的遍历处理的数据写入新数组，返回undefined<br>
-由此得知forEach不能创建数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line"><span class="keyword">let</span> arr1 = arr.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr1) <span class="comment">// undefined</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-</ul>
-<h4 id="Array-prototype-map">Array.prototype.map()</h4>
-<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="noopener">MDN官方文档</a></p>
-<ul>
-<li>在操作中写函数，但是不涉及对数组的操作，不会影响原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 4, 5, 8 ]</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li>在操作中写函数，涉及对数组引用的操作，会改变原数组<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line">arr.map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> arr[index] = item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-<li>尝试把map的遍历处理的数据写入新数组，返回对应数据<br>
-由此得知map可以创建新的栈区<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>]</span><br><span class="line"><span class="keyword">let</span> arr1 = arr.map(<span class="function">(<span class="params">item</span>) =&gt;</span> item * <span class="number">2</span>)</span><br><span class="line"><span class="built_in">console</span>.log(arr1) <span class="comment">// [ 8, 10, 16 ]</span></span><br></pre></td></tr></tbody></table></figure>
-</li>
-</ul>
-<h4 id="Array-prototype-reduce">Array.prototype.reduce()</h4>
-<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank" rel="noopener">MDN官方文档</a><br>
-如果对数据处理是需要循环处理，并且下一次的处理需要和上一次处理的数据相关联，而且处理流程的函数方法都一样，那么可以通过reduce，省略很多步骤</p>
-<ul>
-<li>累加<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">12</span>, <span class="number">23</span>]</span><br><span class="line"><span class="keyword">const</span> reducer = <span class="function">(<span class="params">a, b</span>) =&gt;</span> a + b</span><br><span class="line"><span class="keyword">const</span> test1 = arr.reduce(reducer)</span><br><span class="line"><span class="built_in">console</span>.log(test1)</span><br></pre></td></tr></tbody></table></figure>
-</li>
-</ul>
-<h4 id="分析总结">分析总结</h4>
-<ul>
-<li><code>map</code>和<code>forEach</code><br>
-虽然文档说<code>map</code>和<code>forEach</code>在对原数组操作模式上不一样<br>
-测试之后其实也是有共通之处的<br>
-所不同的地方在于，<code>map</code>可以返回一个新数组，<code>forEach</code>不可以<br>
-所以结合官方和众人的经验总结，对于<code>map</code>和<code>forEach</code>在不同场景下选取不同的使用<br>
-如果需要涉及对数据有改动的相关操作使用<code>map</code><br>
-如果是对数据无改动，对数据查询，写入数据库等操作，使用<code>forEach</code></li>
-<li>与<code>reduce</code>的使用关系<br>
-当复杂的函数可以使用map处理<br>
-简单的函数处理，重复工作的累加累减这种可以使用reduce<br>
-使用reduce可以减少代码量</li>
 </ul>
 <script>
         document.querySelectorAll('.github-emoji')
